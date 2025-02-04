@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <style>
+    /* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #080d29;
+}
+
+.gallery {
+  padding: 20px;
+  text-align: center;
+}
+
+.gallery h1 {
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  color:white;
+}
+
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+.thumbnail {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Lightbox Styles */
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.lightbox-content {
+  margin: auto;
+  display: block;
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #ccc;
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  transition: 0.1s;
+  user-select: none;
+}
+
+.prev {
+  left: 20px;
+}
+
+.next {
+  right: 20px;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+  </style>
+</head>
+<body>
+  <div class="gallery">
+    <h1>My Image Gallery</h1>
+    <div class="gallery-container">
+      <!-- Thumbnail Images -->
+      <script>
+        const images = [
+          'pexels-chevanon-1108099.jpg', 'pexels-david-bartus-43782-586687.jpg', 'pexels-fabianwiktor-994605.jpg', 'pexels-francesco-ungaro-96428.jpg', 'pexels-adilya-2148931609-30346385.jpg',
+          'pexels-cmrcn-30380521.jpg', 'pexels-freestockpro-2166553.jpg', 'pexels-iustin-boghitoi-2148940010-30350618.jpg', 'pexels-hilaryh-38008.jpg', 'pexels-jimmy-teoh-294331-1010657.jpg',
+          'pexels-john-wayne-2149145324-30450013.jpg', 'pexels-mahe-haroutinian-322834-3748174.jpg', 'pexels-matreding-28588342.jpg', 'pexels-mikechie-esparagoza-749296-1742370.jpg', 'pexels-muffin-1676004.jpg',
+          'pexels-nandhukumar-450441.jpg', 'pexels-paula-schmidt-2148467000-30368522.jpg', 'pexels-peng-louis-587527-1643456.jpg', 'pexels-pixabay-33045.jpg', 'pexels-pixabay-33109.jpg',
+          'pexels-pixabay-36762.jpg', 'pexels-pixabay-38238.jpg', 'pexels-pixabay-50594.jpg', 'pexels-pixabay-210012.jpg', 'pexels-sebastiaan-been-2148959155-30359820.jpg',
+          'pexels-shottrotter-29393700.jpg', 'pexels-tbd-859104985-30325070.jpg', 'pexels-wanderer-731217.jpg', 'pexels-chevanon-1108099.jpg', '5a93da5d-3fe2-4422-96af-e6921d2fbd3e.jpg',
+          '79375651-0521-43a1-96a8-4f085db92739.jpg', 'd0e5b8aa-1b29-4f43-ab85-2bef3fa043ca.jpg', 'd3c9231c-f5fd-40bd-b6ab-1b1c3d958807.jpg', 'pexels-david-bartus-43782-586687.jpg', 'pexels-freestockpro-2166553.jpg'
+        ];
+        
+        document.write(images.map(img => `
+          <div class="thumbnail" onclick="openLightbox('${img}')">
+            <img src="${img}" alt="Image">
+          </div>`).join(''));
+      </script>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox">
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <span class="prev" onclick="changeImage(-1)">&#10094;</span>
+    <span class="next" onclick="changeImage(1)">&#10095;</span>
+    <img id="lightbox-img" class="lightbox-content" src="" alt="Lightbox Image">
+  </div>
+
+  <script>
+    let currentIndex = 0;
+    
+    function openLightbox(imgSrc) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      lightbox.style.display = 'block';
+      lightboxImg.src = imgSrc;
+      currentIndex = images.indexOf(imgSrc);
+    }
+    
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+    
+    function changeImage(n) {
+      currentIndex += n;
+      if (currentIndex >= images.length) currentIndex = 0;
+      else if (currentIndex < 0) currentIndex = images.length - 1;
+      document.getElementById('lightbox-img').src = images[currentIndex];
+    }
+    
+    window.onclick = function(event) {
+      if (event.target === document.getElementById('lightbox')) closeLightbox();
+    };
+  </script>
+</body>
+</html>
